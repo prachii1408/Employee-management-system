@@ -1,24 +1,38 @@
-import logo from './logo.svg';
+import axios from "axios";
 import './App.css';
+import {Route,Routes} from "react-router-dom";
+import Home from "./Components/Home";
+import Add from "./Components/Add";
+import { useEffect, useState } from "react";
+import Edit from "./Components/Edit";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const [data,setData]=useState([]);  
+  const [ID,setID]=useState(0);
+  function display(){
+    axios.get("https://api.thomso.in/apiV1/assignment").then((res)=>{
+   setData(res.data);
+  }).catch((e)=>console.log(e));
+
+  }
+  
+useEffect(()=>{
+  display();
+},[]);
+
+function update(id){
+  setID(id);
+}
+ 
+  return (<>
+  <Routes>
+    <Route path="/" element={<Home userData={data} userDisplay={display} userUpdate={update}/>} />
+    <Route path="/add" element={<Add userDisplay={display}/>} />
+    <Route path="/edit" element={<Edit userDisplay={display} id={ID}/>} />
+  </Routes>
+   
+  </>
+   
   );
 }
 
